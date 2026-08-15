@@ -96,25 +96,11 @@ npm start              # 读取 ~/.codestats/daily.jsonl
 
 整个项目**没有任何第三方依赖**，`npm start` 就能跑。
 
-## 🚀 发布到市场（开源准备）
+## 🧡 许可与安装
 
-发布硬性要求已备齐：**128×128 图标**（`media/icon.png`）、`icon` / `repository` / `keywords` 字段、`.vscodeignore`、MIT `LICENSE`、GitHub Actions 自动发布（`.github/workflows/publish.yml`）。
-
-发布前只需改 3 处：
-
-1. **publisher**（`extension/package.json` 第 6 行 `"publisher": "local"`）→ 改成你的发布者 ID（在 [VS Code Marketplace 管理页](https://marketplace.visualstudio.com/manage) 注册，需 Microsoft 账号）
-2. **repository.url**（`extension/package.json`）→ 改成你的 GitHub 仓库地址
-3. **配置仓库 Secrets**：
-   - `VSCE_TOKEN`：Azure DevOps 的 PAT（Marketplace 发布令牌，[创建教程](https://code.visualstudio.com/api/working-with-extensions/publishing-extension#get-a-personal-access-token)）
-   - `OVSX_TOKEN`（可选）：[Open VSX](https://open-vsx.org/) 发布令牌
-
-然后打 tag 自动发布：
-
-```bash
-git tag v0.1.0 && git push origin v0.1.0
-```
-
-GitHub Actions 会同时发布到 **VS Code Marketplace** 和 **Open VSX**（开源镜像，无需微软账号也能装）。本地手动打包：`cd extension && npx @vscode/vsce package`。
+- **MIT License**，随便用、随便改
+- 扩展本地安装：`extension/codestats-vscode-0.1.0.vsix`（扩展面板 → `...` → 从 VSIX 安装），或打开 `extension/` 文件夹按 F5 调试
+- 有问题欢迎提 [Issue](https://github.com/XHang-L/codestats/issues)
 
 ## 📄 数据格式
 
