@@ -1,0 +1,14 @@
+# Node
+node_modules/
+
+# 构建产物
+*.vsix
+
+# 本地数据（不要提交用户的统计）
+.codestats/
+
+# 临时验证截图
+dashboard-narrow.png
+
+# 日志
+*.log

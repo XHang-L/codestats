@@ -1,0 +1,9 @@
+# 打包 VSIX 时排除的开发/无关文件
+.vscode/**
+**/*.map
+**/*.ts
+**/tsconfig*.json
+**/node_modules/**
+**/.git/**
+*.vsix
+codestats-vscode-*.vsix

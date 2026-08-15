@@ -1,0 +1,11 @@
+{
+  "name": "codestats",
+  "version": "0.1.0",
+  "private": true,
+  "description": "本地代码统计：记录每天在哪个 IDE 写了多少行代码 + GitHub 风格贡献热力图",
+  "scripts": {
+    "start": "node dashboard/server.js",
+    "simulate": "node tools/simulate.js",
+    "preview": "node tools/simulate.js && set CODESTATS_FILE=%USERPROFILE%\\.codestats\\daily.sample.jsonl&& node dashboard/server.js"
+  }
+}

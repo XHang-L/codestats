@@ -1,0 +1,29 @@
+# 打 tag（如 v0.1.0）或手动触发后：打包并发布到 VS Code Marketplace 与 Open VSX
+name: publish
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # VS Code Marketplace（需要 VSCE_TOKEN secret：Azure DevOps PAT）
+      - name: Publish to VS Code Marketplace
+        working-directory: extension
+        run: npx --yes @vscode/vsce publish -p "${{ secrets.VSCE_TOKEN }}"
+
+      # Open VSX 开源镜像（需要 OVSX_TOKEN secret，可选）
+      - name: Publish to Open VSX
+        if: ${{ secrets.OVSX_TOKEN != '' }}
+        working-directory: extension
+        run: npx --yes ovsx publish -p "${{ secrets.OVSX_TOKEN }}"

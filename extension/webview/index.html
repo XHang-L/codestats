@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CodeStats · 本地代码统计</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <div class="brand">
+        <div class="logo">&lt;/&gt;</div>
+        <div>
+          <h1>CodeStats<span class="sub">本地代码统计</span></h1>
+          <p class="tagline">每天在哪个 IDE 写了多少行代码 · 数据完全保存在本地</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <span id="last-updated" class="muted"></span>
+        <button id="refresh" type="button">刷新</button>
+      </div>
+    </header>
+
+    <div id="week-banner" class="banner"><!-- 每周总结 + 环比，由 app.js 填充 --></div>
+
+    <section class="cards" id="summary-cards"><!-- 由 app.js 填充 --></section>
+
+    <section class="panel">
+      <h2>年度贡献热力图 <span class="muted" id="heatmap-range"></span></h2>
+      <div id="heatmap" class="heatmap"><div class="placeholder">加载中…</div></div>
+      <div class="heatmap-legend">
+        <span>少</span>
+        <i class="cell"></i><i class="cell l1"></i><i class="cell l2"></i><i class="cell l3"></i><i class="cell l4"></i>
+        <span>多</span>
+        <span class="legend-tip">点击任意格子查看当天明细</span>
+      </div>
+      <div id="day-detail" class="day-detail hidden"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>趋势曲线 <span class="muted" id="trend-range"></span></h2>
+        <div class="seg" id="range-seg">
+          <button type="button" data-range="week">周</button>
+          <button type="button" data-range="month" class="active">月</button>
+          <button type="button" data-range="year">年</button>
+        </div>
+      </div>
+      <div id="trend" class="trend-wrap"><div class="placeholder">加载中…</div></div>
+    </section>
+
+    <div class="cols">
+      <section class="panel">
+        <h2 id="ide-chart-title">最近 30 天 · 按 IDE 分色</h2>
+        <div id="ide-chart" class="ide-chart"><div class="placeholder">加载中…</div></div>
+        <div id="ide-legend" class="ide-legend"></div>
+      </section>
+
+      <section class="panel">
+        <h2>各 IDE 累计占比</h2>
+        <div id="ide-breakdown" class="ide-breakdown"><div class="placeholder">加载中…</div></div>
+      </section>
+    </div>
+
+    <div class="cols">
+      <section class="panel">
+        <h2>各语言累计占比</h2>
+        <div id="lang-breakdown" class="ide-breakdown"><div class="placeholder">加载中…</div></div>
+      </section>
+
+      <section class="panel">
+        <h2>活跃时段 <span class="muted">一天里几点写代码最多</span></h2>
+        <div id="hours-chart" class="hours-chart"><div class="placeholder">加载中…</div></div>
+        <div class="hours-axis"><span>0时</span><span>6时</span><span>12时</span><span>18时</span><span>23时</span></div>
+      </section>
+    </div>
+
+    <footer class="muted" id="footer"></footer>
+  </main>
+  <script src="webview-adapter.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+{
+  "name": "codestats-vscode",
+  "displayName": "CodeStats 本地代码统计",
+  "description": "记录你每天在哪个 IDE 写了多少行代码（支持 VSCode / Trae / Cursor 等 VSCode 系 IDE），带 GitHub 风格贡献热力图，数据 100% 存本地。",
+  "version": "0.1.0",
+  "publisher": "local",
+  "private": true,
+  "license": "MIT",
+  "icon": "media/icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/XHang-L/codestats"
+  },
+  "keywords": [
+    "code stats",
+    "lines of code",
+    "contribution graph",
+    "heatmap",
+    "local",
+    "privacy",
+    "wakatime"
+  ],
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "codestats.showToday",
+        "title": "CodeStats: 今日统计"
+      },
+      {
+        "command": "codestats.openDashboard",
+        "title": "CodeStats: 打开仪表盘"
+      },
+      {
+        "command": "codestats.openSidebar",
+        "title": "CodeStats: 打开侧边栏统计"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "codestats",
+          "title": "CodeStats",
+          "icon": "media/codestats.svg"
+        }
+      ]
+    },
+    "views": {
+      "codestats": [
+        {
+          "type": "webview",
+          "id": "codestats.view",
+          "name": "代码统计"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "CodeStats",
+      "properties": {
+        "codestats.dataDir": {
+          "type": "string",
+          "default": "",
+          "description": "统计数据目录（默认 ~/.codestats，留空即可）"
+        },
+        "codestats.flushIntervalSeconds": {
+          "type": "number",
+          "default": 30,
+          "minimum": 5,
+          "description": "数据落盘间隔（秒）"
+        }
+      }
+    }
+  }
+}
