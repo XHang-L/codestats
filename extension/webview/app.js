@@ -12,10 +12,11 @@ window.CodeStatsAPI = window.CodeStatsAPI || {
 }
 
 const IDE_COLORS = {
-  trae: '#3b91ff',
-  vscode: '#5aa9ff',
+  trae: '#2ea043',        // 绿
+  vscode: '#3b91ff',      // 蓝
   cursor: '#7c7f8f',
-  idea: '#ff8c3b',
+  idea: '#a371f7',        // 紫（IntelliJ IDEA）
+  intellij: '#a371f7',    // 紫（别名，兼容不同命名）
   webstorm: '#3bd6ff',
   pycharm: '#3bff9e',
   goland: '#3bd0ff',
