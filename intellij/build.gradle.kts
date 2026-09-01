@@ -1,7 +1,8 @@
 plugins {
     id("java")
     kotlin("jvm") version "2.4.10"
-    id("org.jetbrains.intellij") version "1.17.4"
+    // IntelliJ Platform Gradle Plugin 2.x（支持 2024.2+ 平台，修复 1.x 的兼容性问题）
+    id("org.jetbrains.intellij.platform") version "2.18.1"
 }
 
 group = "com.codestats"
@@ -9,23 +10,20 @@ version = "0.1.0"
 
 repositories {
     mavenCentral()
+    intellijPlatform {
+        defaultRepositories()
+    }
 }
 
-intellij {
-    pluginName.set("codestats-idea")
-    // 优先用本地已安装的 IDEA 作为 SDK（无需下载整个 IDE）；
-    // 没配 intellijLocalPath 时自动下载 IC-2024.1.2。
-    val local = providers.gradleProperty("intellijLocalPath").orNull?.takeIf { it.isNotBlank() }
-    if (local != null) {
-        localPath.set(local)
-    } else {
-        version.set("IC-2024.1.2")
+dependencies {
+    intellijPlatform {
+        // 用本机已安装的 IDEA 作为 SDK；换机器时改成你自己的路径，或改用 ideaIC("2024.1.2") 下载版
+        local("D:/IDEA2026/IntelliJ IDEA 2026.2.0.1")
     }
-    downloadSources.set(false)
-    updateSinceUntilBuild.set(true)
 }
 
 kotlin {
+    jvmToolchain(21)
     compilerOptions {
         jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
     }
@@ -36,12 +34,11 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
-tasks {
-    // 纯 Kotlin 插件无需字节码插桩；禁用可避免对 JDK 结构的要求
-    named("instrumentCode") {
-        enabled = false
-    }
-    buildSearchableOptions {
-        enabled = false
+intellijPlatform {
+    buildSearchableOptions = false
+    // 纯 Kotlin 插件无需字节码插桩
+    instrumentCode = false
+    pluginConfiguration {
+        version = "0.1.0"
     }
 }
