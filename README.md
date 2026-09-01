@@ -8,7 +8,7 @@
 | --- | ------------------ | ---------------------------------------------------------------------------- |
 | 🟩  | **年度贡献热力图** | GitHub 同款，自然年对齐、按月分隔，**点击任意一天下钻**到当天 IDE / 文件明细 |
 | 📈  | **趋势曲线**       | 平滑贝塞尔曲线，**周 / 月 / 年**一键切换，悬停查看每日行数                   |
-| 🧩  | **按 IDE 分色**    | Trae / VSCode / Cursor / Windsurf 共用一个扩展，自动识别，柱状图按 IDE 堆叠  |
+| 🧩  | **按 IDE 分色**    | trae 绿 / VSCode 蓝 / IntelliJ 紫，一目了然；IDEA 系有独立 Kotlin 插件  |
 | 🗣  | **语言统计**       | 按文件扩展名自动聚合（TypeScript / Python / Markdown…）                      |
 | 🕐  | **活跃时段**       | 一天 24 小时里几点写代码最多                                                 |
 | 🎯  | **每日目标环**     | 设置每日目标行数，进度环 + 达标打勾                                          |
@@ -30,7 +30,7 @@
 ├─ Cursor ─┴───────────────────────┤
 └─ Windsurf ─┴─────────────────────┤
                                    ├→ ~/.codestats/daily.jsonl
-[IDEA / WebStorm] ──(路线图)───────┘        │  (JSONL 追加写入)
+[IDEA] ──(intellij/ Kotlin 插件)───┘        │  (JSONL 追加写入)
                                             ▼
                            本地仪表盘 (node dashboard/server.js)
                                    │
@@ -41,7 +41,7 @@
                                    └ 🎯 目标环 · 📣 周报横幅
 ```
 
-**关键设计**：Trae、Cursor、Windsurf 都是 VSCode 系 IDE，**一个扩展通吃**，通过 `vscode.env.appName` 自动识别当前 IDE——不需要为每个 IDE 单独写插件。
+**关键设计**：Trae、Cursor、Windsurf 都是 VSCode 系 IDE，**一个扩展通吃**，通过 `vscode.env.appName` 自动识别当前 IDE——不需要为每个 IDE 单独写插件。**IDEA 系有独立的 Kotlin 插件**（`intellij/`），数据写入同一份 JSONL，仪表盘自动合并。
 
 ## 🚀 快速开始
 
@@ -66,6 +66,16 @@ npm run preview        # 生成 365 天样例数据并启动仪表盘
 
 1. 用 IDE 打开 `extension/` 文件夹
 2. 按 `F5`，在弹出的「扩展开发宿主」窗口里写代码
+
+### 1.5️⃣ 安装 IntelliJ IDEA 插件
+
+1. 用 IntelliJ IDEA 打开 **`intellij/`** 文件夹（Gradle 项目，会自动导入）
+2. 等依赖同步完（右下角进度条消失）
+3. 运行 **`runIde`** Gradle 任务（Gradle 面板双击）→ 会启动一个带插件的测试版 IDEA
+4. 在测试版 IDEA 里正常写代码，工具菜单 → **CodeStats: 今日统计** 查看
+5. 想装进正式版 IDEA：`.\gradlew.bat buildPlugin` → 生成 `build/distributions/codestats-idea-0.1.0.zip` → 设置 → 插件 → 从磁盘安装
+
+> 首次构建会自动下载 Gradle 和依赖（几百 MB，需联网）；`gradle.properties` 里的 `intellijLocalPath` 指向你本机的 IDEA，删掉则自动下载 IC-2024.1.2 SDK。
 
 ### 2️⃣ 日常使用
 
@@ -151,12 +161,16 @@ codestats/
 │  ├─ simulate.js          样例数据生成器
 │  ├─ test-dashboard.js    仪表盘自动化测试
 │  └─ test-extension-logic.js  扩展逻辑单测
+├─ intellij/               IntelliJ IDEA 插件（Kotlin + Gradle，数据同格式）
+│  ├─ build.gradle.kts     构建脚本（本地 IDEA SDK 或自动下载）
+│  ├─ gradlew.bat          Gradle wrapper
+│  └─ src/main/kotlin/...  文档监听 / 聚合 / 落盘 / 菜单命令
 └─ package.json            npm start / npm run preview
 ```
 
 ## 🗺️ 路线图
 
-- [ ] **IDEA 插件**（Kotlin / JetBrains SDK）—— 覆盖 IDEA / WebStorm / PyCharm / GoLand
+- [x] **IDEA 插件**（Kotlin / JetBrains SDK）—— 基础版已就绪（`intellij/`），待补 WebStorm / PyCharm 适配
 - [ ] **Tauri 桌面版**仪表盘（替代网页）
 - [ ] **编码时长**（WakaTime 式活跃分钟统计，需扩展升级）
 - [ ] **精确活跃时段**（记录每个文件的首个编辑时刻）
@@ -165,7 +179,7 @@ codestats/
 
 ## ⚠️ 已知限制
 
-- 目前只统计 VSCode 系 IDE；IDEA 系需要 JetBrains 插件（路线图中）
+- IDEA 插件为基础版：统计行数 + 今日明细命令；状态栏小组件、WebStorm/PyCharm 多产品适配待迭代
 - 行数 = 插入的换行数，不含单行修改 / 删除
 - 日期按本地时区切分（每天从本地 0 点开始）
 - `ts` 是落盘时刻而非编辑时刻（活跃时段为近似分布，精确版见路线图）

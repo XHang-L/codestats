@@ -1,0 +1,29 @@
+<idea-plugin>
+    <id>com.codestats.idea</id>
+    <name>CodeStats</name>
+    <vendor>XHang-L</vendor>
+
+    <description><![CDATA[
+        <p><b>CodeStats · 本地代码统计</b></p>
+        <p>记录你在 IntelliJ IDEA 里每天写了多少行代码，数据写入 <code>~/.codestats/daily.jsonl</code>，
+        与 CodeStats 仪表盘 / VSCode 扩展共享同一份数据。</p>
+        <ul>
+            <li>自动统计：监听编辑器文档变化，统计插入的换行数（回车 / 粘贴多行计入，单行修改不计）</li>
+            <li>工具菜单 <b>CodeStats: 今日统计</b>：查看今日各文件行数</li>
+            <li>数据 100% 本地存储，零上传</li>
+        </ul>
+    ]]></description>
+
+    <depends>com.intellij.modules.platform</depends>
+
+    <applicationService serviceImplementation="com.codestats.idea.CodeStatsService"/>
+
+    <notificationGroup id="CodeStats" displayType="BALLOON"/>
+
+    <actions>
+        <action id="CodeStats.ShowToday" class="com.codestats.idea.ShowTodayAction"
+                text="CodeStats: 今日统计" description="查看今天在 IDEA 里写了多少行代码">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+        </action>
+    </actions>
+</idea-plugin>
