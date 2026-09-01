@@ -103,14 +103,49 @@ class CodeStatsService : BulkAwareDocumentListener, Disposable {
         return count
     }
 
-    private data class FileRec(val date: String, val file: String, val lines: Long)
+    /** 今年每日行数（1/1 → 12/31，含 0 的日子）——年度热力图数据 */
+    fun yearDayTotals(): List<Pair<String, Long>> {
+        val map = mutableMapOf<String, Long>()
+        fileRecords().forEach { map.merge(it.date, it.lines) { a, b -> a + b } }
+        pending.forEach { (k, v) -> map.merge(k.substringBefore('\u0000'), v) { a, b -> a + b } }
+        val year = LocalDate.now().year
+        val start = LocalDate.of(year, 1, 1)
+        val end = LocalDate.of(year, 12, 31)
+        val out = mutableListOf<Pair<String, Long>>()
+        var d = start
+        while (!d.isAfter(end)) {
+            out.add(d.toString() to (map[d.toString()] ?: 0L))
+            d = d.plusDays(1)
+        }
+        return out
+    }
+
+    /** 最近 N 天按 IDE 的行数：(date, ide→lines) —— 按 IDE 分色柱状图数据 */
+    fun lastDaysByIde(days: Int = 14): List<Pair<String, Map<String, Long>>> {
+        val today = LocalDate.now()
+        val start = today.minusDays((days - 1).toLong())
+        val result = mutableListOf<Pair<String, Map<String, Long>>>()
+        for (i in 0 until days) {
+            val date = start.plusDays(i.toLong()).toString()
+            val map = mutableMapOf<String, Long>()
+            fileRecords().filter { it.date == date }.forEach { map.merge(it.ide, it.lines) { a, b -> a + b } }
+            pending.forEach { (k, v) ->
+                if (k.substringBefore('\u0000') == date) map.merge("idea", v) { a, b -> a + b }
+            }
+            result.add(date to map)
+        }
+        return result
+    }
+
+    private data class FileRec(val date: String, val ide: String, val file: String, val lines: Long)
 
     private fun fileRecords(): List<FileRec> = readFileLines().mapNotNull { line ->
         runCatching {
             val date = line.substringAfter("\"date\":\"").substringBefore('"')
+            val ide = line.substringAfter("\"ide\":\"").substringBefore('"')
             val file = line.substringAfter("\"file\":\"").substringBefore('"')
             val lines = line.substringAfter("\"lines\":").substringBefore(',').toLong()
-            FileRec(date, file, lines)
+            FileRec(date, ide, file, lines)
         }.getOrNull()
     }
 

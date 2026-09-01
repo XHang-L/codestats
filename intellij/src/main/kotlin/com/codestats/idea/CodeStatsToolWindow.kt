@@ -8,6 +8,7 @@ import java.awt.Color
 import java.awt.Dimension
 import java.awt.Font
 import javax.swing.BorderFactory
+import javax.swing.Box
 import javax.swing.BoxLayout
 import javax.swing.JButton
 import javax.swing.JLabel
@@ -17,7 +18,7 @@ import javax.swing.JScrollPane
 import javax.swing.SwingConstants
 import javax.swing.Timer
 
-/** CodeStats 侧边栏面板：今日 / 本周 / 连续天数 / 今日文件明细 */
+/** CodeStats 侧边栏：统计数字 + 年度热力图 + 按 IDE 柱状图 + 今日文件明细 */
 class CodeStatsToolWindowFactory : ToolWindowFactory {
     override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
         toolWindow.contentManager.addContent(
@@ -26,7 +27,7 @@ class CodeStatsToolWindowFactory : ToolWindowFactory {
     }
 }
 
-class CodeStatsPanel : JPanel(BorderLayout(0, 8)) {
+class CodeStatsPanel : JPanel(BorderLayout()) {
 
     private val service = CodeStatsService.getInstance()
 
@@ -37,37 +38,48 @@ class CodeStatsPanel : JPanel(BorderLayout(0, 8)) {
     private val streakLabel = JLabel("连续：—")
     private val pathLabel = JLabel("数据：—").apply { foreground = Color.GRAY }
     private val fileList = JList<String>()
+    private val heatmap = HeatmapPanel()
+    private val bars = IdeBarsPanel()
     private val timer = Timer(10_000) { refresh() }
 
     init {
-        border = BorderFactory.createEmptyBorder(12, 12, 12, 12)
+        val body = JPanel()
+        body.layout = BoxLayout(body, BoxLayout.Y_AXIS)
+        body.border = BorderFactory.createEmptyBorder(12, 12, 12, 12)
 
-        val top = JPanel()
-        top.layout = BoxLayout(top, BoxLayout.Y_AXIS)
-        top.add(todayLabel)
-        top.add(weekLabel)
-        top.add(streakLabel)
-        top.add(pathLabel)
+        body.add(todayLabel)
+        body.add(weekLabel)
+        body.add(streakLabel)
+        body.add(pathLabel)
 
-        val filesTitle = JLabel("今日文件").apply { foreground = Color.GRAY }
+        body.add(Box.createVerticalStrut(10))
+        body.add(sectionTitle("年度热力图"))
+        body.add(heatmap)
 
-        val center = JPanel(BorderLayout(0, 4))
-        center.add(filesTitle, BorderLayout.NORTH)
-        center.add(JScrollPane(fileList), BorderLayout.CENTER)
+        body.add(Box.createVerticalStrut(12))
+        body.add(sectionTitle("最近 14 天 · 按 IDE 分色"))
+        body.add(bars)
+
+        body.add(Box.createVerticalStrut(12))
+        body.add(sectionTitle("今日文件"))
+        val fileScroll = JScrollPane(fileList)
+        fileScroll.preferredSize = Dimension(260, 130)
+        fileScroll.maximumSize = Dimension(Int.MAX_VALUE, 130)
+        body.add(fileScroll)
 
         val refreshBtn = JButton("刷新").apply {
             addActionListener { refresh() }
-            preferredSize = Dimension(Int.MAX_VALUE, 28)
             maximumSize = Dimension(Int.MAX_VALUE, 28)
         }
 
-        add(top, BorderLayout.NORTH)
-        add(center, BorderLayout.CENTER)
+        add(JScrollPane(body), BorderLayout.CENTER)
         add(refreshBtn, BorderLayout.SOUTH)
-
         timer.start()
         refresh()
     }
+
+    private fun sectionTitle(text: String): JLabel =
+        JLabel(text).apply { foreground = Color.GRAY }
 
     private fun refresh() {
         val byFile = service.todayByFile()
@@ -76,6 +88,8 @@ class CodeStatsPanel : JPanel(BorderLayout(0, 8)) {
         weekLabel.text = "本周 ${service.weekTotal()} 行"
         streakLabel.text = "连续 ${service.streak()} 天"
         pathLabel.text = "数据：${service.dataFile}"
+        heatmap.setData(service.yearDayTotals())
+        bars.setData(service.lastDaysByIde(14))
         val rows = byFile.take(50).map { (file, lines) ->
             val name = file.substringAfterLast('/').substringAfterLast('\\')
             "$name  ·  $lines 行"
