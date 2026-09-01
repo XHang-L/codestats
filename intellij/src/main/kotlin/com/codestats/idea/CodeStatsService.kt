@@ -69,18 +69,49 @@ class CodeStatsService : BulkAwareDocumentListener, Disposable {
         val map = mutableMapOf<String, Long>()
         pending.forEach { (k, v) ->
             if (k.startsWith("$date\u0000")) {
-                val file = k.substringAfter('\u0000')
-                map.merge(file, v) { a, b -> a + b }
+                map.merge(k.substringAfter('\u0000'), v) { a, b -> a + b }
             }
         }
-        readFileLines()
-            .filter { it.startsWith("\"date\":\"$date\"") }
-            .forEach { line ->
-                val file = line.substringAfter("\"file\":\"").substringBefore('"')
-                val lines = line.substringAfter("\"lines\":").substringBefore(',').toLongOrNull() ?: 0L
-                map.merge(file, lines) { a, b -> a + b }
-            }
+        fileRecords().filter { it.date == date }.forEach { map.merge(it.file, it.lines) { a, b -> a + b } }
         return map.entries.sortedByDescending { it.value }.map { it.key to it.value }
+    }
+
+    /** 本周（含今天往前 6 天）总行数 */
+    fun weekTotal(): Long {
+        val since = LocalDate.now().minusDays(6).toString()
+        val fileSum = fileRecords().filter { it.date >= since }.sumOf { it.lines }
+        val pendingSum = pending.entries.sumOf { (k, v) ->
+            val date = k.substringBefore('\u0000')
+            if (date >= since) v else 0L
+        }
+        return fileSum + pendingSum
+    }
+
+    /** 连续写代码天数（截至今天或昨天，含未落盘） */
+    fun streak(): Int {
+        val hasDay = mutableMapOf<String, Boolean>()
+        fileRecords().forEach { hasDay[it.date] = true }
+        pending.forEach { (k, _) -> hasDay[k.substringBefore('\u0000')] = true }
+
+        var cursor = LocalDate.now()
+        if (hasDay[cursor.toString()] != true) cursor = cursor.minusDays(1)
+        var count = 0
+        while (hasDay[cursor.toString()] == true) {
+            count++
+            cursor = cursor.minusDays(1)
+        }
+        return count
+    }
+
+    private data class FileRec(val date: String, val file: String, val lines: Long)
+
+    private fun fileRecords(): List<FileRec> = readFileLines().mapNotNull { line ->
+        runCatching {
+            val date = line.substringAfter("\"date\":\"").substringBefore('"')
+            val file = line.substringAfter("\"file\":\"").substringBefore('"')
+            val lines = line.substringAfter("\"lines\":").substringBefore(',').toLong()
+            FileRec(date, file, lines)
+        }.getOrNull()
     }
 
     /** 落盘：把内存聚合追加写入 daily.jsonl */

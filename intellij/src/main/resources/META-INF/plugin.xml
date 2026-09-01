@@ -18,6 +18,11 @@
 
     <applicationService serviceImplementation="com.codestats.idea.CodeStatsService"/>
 
+    <extensions defaultExtensionNs="com.intellij">
+        <toolWindow id="CodeStats" anchor="right" icon="/icons/codestats.svg"
+                    factoryClass="com.codestats.idea.CodeStatsToolWindowFactory"/>
+    </extensions>
+
     <notificationGroup id="CodeStats" displayType="BALLOON"/>
 
     <actions>
