@@ -12,6 +12,9 @@ import com.intellij.ui.jcef.JBCefBrowser
 class CodeStatsToolWindowFactory : ToolWindowFactory {
 
     override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
+        // 确保统计服务已实例化（注册文档监听器，避免惰性加载导致不统计）
+        CodeStatsService.getInstance()
+
         val content = if (JBCefApp.isSupported() && CodeStatsDashboardServer.ensureRunning()) {
             // JCEF 可用 + 本地仪表盘已就绪 → 内嵌完整仪表盘
             val browser = JBCefBrowser()

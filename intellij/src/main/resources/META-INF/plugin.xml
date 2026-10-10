@@ -17,7 +17,8 @@
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.jcef</depends>
 
-    <applicationService serviceImplementation="com.codestats.idea.CodeStatsService"/>
+    <!-- preload=true：IDE 启动即实例化服务，注册文档监听器（否则惰性加载会导致不统计） -->
+    <applicationService serviceImplementation="com.codestats.idea.CodeStatsService" preload="true"/>
 
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow id="CodeStats" anchor="right" icon="/icons/codestats.svg"
