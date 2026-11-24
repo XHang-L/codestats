@@ -12,3 +12,17 @@ dashboard-narrow.png
 
 # 日志
 *.log
+
+# 鸿蒙工程构建产物与本地配置
+harmony/.hvigor/
+harmony/.idea/
+harmony/**/build/
+harmony/oh_modules/
+harmony/local.properties
+harmony/entry/.preview/
+
+# 本地编译的无窗口启动器（用 g++ 重新生成，见 README）
+tools/codestats-sync.exe
+
+# WorkBuddy 记忆与工作区数据
+.workbuddy/

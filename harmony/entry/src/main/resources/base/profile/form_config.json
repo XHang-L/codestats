@@ -1,0 +1,26 @@
+{
+  "forms": [
+    {
+      "name": "CodeStatsCard",
+      "displayName": "$string:widget_label",
+      "description": "$string:widget_desc",
+      "src": "./ets/widget/pages/WidgetCard.ets",
+      "uiSyntax": "arkts",
+      "window": {
+        "designWidth": 360,
+        "autoDesignWidth": false
+      },
+      "colorMode": "auto",
+      "isDynamic": true,
+      "isDefault": true,
+      "updateEnabled": true,
+      "scheduledUpdateTime": "00:05",
+      "updateDuration": 1,
+      "defaultDimension": "2*4",
+      "supportDimensions": [
+        "2*4"
+      ],
+      "formConfigAbility": "ability://EntryAbility"
+    }
+  ]
+}

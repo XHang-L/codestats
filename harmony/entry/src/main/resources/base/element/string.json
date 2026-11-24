@@ -1,0 +1,24 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "CodeStats 桌面卡片"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "CodeStats"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "CodeStats"
+    },
+    {
+      "name": "widget_label",
+      "value": "CodeStats 代码统计"
+    },
+    {
+      "name": "widget_desc",
+      "value": "本月代码热力图与今日/本月/本年行数"
+    }
+  ]
+}

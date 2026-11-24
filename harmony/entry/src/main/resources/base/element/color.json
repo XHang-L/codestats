@@ -1,0 +1,21 @@
+{
+  "color": [
+    { "name": "start_window_background", "value": "#F4F5F4" },
+    { "name": "page_bg", "value": "#F4F5F4" },
+    { "name": "card_bg", "value": "#FFFFFF" },
+    { "name": "border", "value": "#E8EAE8" },
+    { "name": "text_primary", "value": "#1B1B1B" },
+    { "name": "text_secondary", "value": "#7C837C" },
+    { "name": "text_tertiary", "value": "#9AA09A" },
+    { "name": "text_hint", "value": "#C0C4C0" },
+    { "name": "accent", "value": "#2F7A4A" },
+    { "name": "accent_bright", "value": "#39D353" },
+    { "name": "track", "value": "#EFF1EF" },
+    { "name": "cell_none", "value": "#00000000" },
+    { "name": "cell0", "value": "#EBEDF0" },
+    { "name": "cell1", "value": "#9BE9A8" },
+    { "name": "cell2", "value": "#40C463" },
+    { "name": "cell3", "value": "#30A14E" },
+    { "name": "cell4", "value": "#216E39" }
+  ]
+}
