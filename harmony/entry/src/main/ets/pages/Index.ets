@@ -107,7 +107,7 @@ struct Index {
     } else {
       this.status = this.info.updated.length > 0
         ? '离线 · 数据 ' + this.localTime(this.info.updated)
-        : '还没有数据，去设置里填 token';
+        : '还没有数据：去设置里填 token 和 gistId';
     }
   }
 

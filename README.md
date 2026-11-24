@@ -130,7 +130,7 @@ hvigorw assembleHap --mode module -p product=default
 hdc install -r entry/build/default/outputs/default/entry-default-signed.hap
 ```
 
-App 里填 token 和 gistId（gistId 已内置默认值），点「立即同步」。
+App 里填 token 和 gistId（gistId 在电脑上跑 `npm run sync` 时会打印），点「立即同步」。
 桌面长按 → 服务卡片 → CodeStats → 拖 2×4 卡片。
 
 细节与踩坑记录见 [harmony/README.md](harmony/README.md)。

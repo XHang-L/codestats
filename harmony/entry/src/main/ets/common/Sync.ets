@@ -13,8 +13,6 @@ export const KEY_CACHE: string = 'cache';
 export const KEY_TOKEN: string = 'token';
 export const KEY_GIST: string = 'gistId';
 
-/** 预置的 Gist id，省得在手机上敲；token 仍然要手填 */
-const DEFAULT_GIST: string = '02dedad92414b9a313018bb357f4f18d';
 const KEY_FORMS: string = 'formIds';
 
 export interface Loaded {
@@ -173,10 +171,8 @@ export function removeFormId(ctx: common.Context, formId: string): void {
   saveFormIds(ctx, next);
 }
 
-/** 没填过就用预置值 */
 export function readGistId(ctx: common.Context): string {
-  const v: string = readSetting(ctx, KEY_GIST);
-  return v.length > 0 ? v : DEFAULT_GIST;
+  return readSetting(ctx, KEY_GIST);
 }
 
 export async function fetchRemote(ctx: common.Context): Promise<Loaded | null> {

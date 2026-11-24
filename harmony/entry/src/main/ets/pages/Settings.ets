@@ -88,7 +88,7 @@ struct Settings {
             this.token = v;
           })
 
-        TextInput({ text: this.gistId, placeholder: 'gistId' })
+        TextInput({ text: this.gistId, placeholder: 'gistId（电脑上运行 npm run sync 会打印）' })
           .height(46)
           .fontSize(13)
           .onChange((v: string) => {
